@@ -1,0 +1,1207 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <title>Jersey City Ward Map</title>
+    <style>
+      html, body, #map-canvas {
+        height: 100%;
+        margin: 0px;
+        padding: 0px
+      }
+    </style>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script>
+// This example creates a polygons representing the wards of Jersey City.
+var map;
+var infoWindow;
+
+function initialize() {
+  var mapOptions = {
+    zoom: 12,
+    center: new google.maps.LatLng(40.709946, -74.085564),
+    mapTypeId: google.maps.MapTypeId.TERRAIN
+  };
+
+  map = new google.maps.Map(document.getElementById('map-canvas'),
+      mapOptions);
+
+  warda = [
+    [40.709946,-74.085564],
+    [40.713062,-74.090225],
+    [40.711906,-74.092224],
+    [40.7141,-74.095497],
+    [40.714603,-74.09639],
+    [40.717701,-74.101685],
+    [40.718765,-74.103416],
+    [40.717613,-74.104866],
+    [40.715103,-74.111961],
+    [40.701626,-74.109123],
+    [40.699265,-74.111259],
+    [40.698978,-74.110634],
+    [40.69857,-74.109596],
+    [40.697899,-74.10791],
+    [40.697983,-74.107826],
+    [40.695515,-74.10302],
+    [40.692135,-74.101028],
+    [40.690674,-74.102295],
+    [40.680283,-74.097755],
+    [40.667248,-74.065575],
+    [40.666073,-74.062965],
+    [40.66523,-74.061089],
+    [40.660717,-74.048897],
+    [40.680286,-74.036842],
+    [40.689613,-74.055206],
+    [40.692616,-74.060616],
+    [40.69371,-74.062592],
+    [40.696999,-74.068207],
+    [40.69902,-74.067436],
+    [40.699619,-74.067223],
+    [40.700371,-74.068092],
+    [40.700893,-74.068718],
+    [40.701572,-74.069572],
+    [40.701691,-74.069855],
+    [40.701813,-74.070122],
+    [40.7019,-74.070282],
+    [40.702003,-74.070587],
+    [40.702202,-74.071487],
+    [40.702507,-74.072708],
+    [40.701275,-74.075333],
+    [40.700901,-74.076088],
+    [40.700596,-74.076683],
+    [40.700226,-74.077217],
+    [40.700504,-74.077522],
+    [40.701141,-74.078316],
+    [40.700958,-74.078636],
+    [40.702888,-74.081169],
+    [40.701031,-74.082977],
+    [40.704762,-74.088631],
+    [40.705605,-74.087517],
+    [40.705769,-74.087395],
+    [40.705872,-74.087288],
+    [40.706413,-74.086884],
+    [40.706509,-74.086769],
+    [40.707314,-74.086151],
+    [40.708023,-74.087242],
+    [40.708408,-74.086693],
+    [40.708611,-74.086426],
+    [40.708862,-74.086151],
+    [40.709106,-74.08596],
+    [40.709347,-74.085793],
+    [40.709625,-74.085663],
+    [40.709946,-74.085564]
+  ];
+
+  wardb = [
+    [40.714069,-74.080742],
+    [40.714664,-74.080215],
+    [40.716328,-74.078438],
+    [40.716591,-74.078156],
+    [40.717091,-74.077438],
+    [40.718922,-74.074738],
+    [40.721622,-74.07209],
+    [40.723362,-74.07048],
+    [40.723846,-74.070137],
+    [40.724262,-74.069878],
+    [40.724415,-74.069725],
+    [40.724579,-74.069481],
+    [40.7253,-74.068054],
+    [40.725883,-74.067688],
+    [40.726437,-74.067497],
+    [40.72718,-74.067192],
+    [40.728321,-74.070099],
+    [40.72924,-74.069496],
+    [40.729717,-74.070702],
+    [40.730068,-74.071449],
+    [40.730877,-74.073486],
+    [40.734402,-74.07135],
+    [40.736542,-74.070015],
+    [40.736755,-74.069878],
+    [40.737549,-74.072594],
+    [40.737659,-74.072807],
+    [40.738708,-74.072319],
+    [40.739494,-74.072083],
+    [40.740101,-74.071739],
+    [40.740223,-74.071602],
+    [40.741978,-74.070557],
+    [40.742287,-74.072166],
+    [40.742722,-74.074738],
+    [40.742962,-74.075928],
+    [40.74313,-74.076965],
+    [40.742237,-74.078056],
+    [40.740665,-74.081192],
+    [40.739574,-74.086197],
+    [40.737534,-74.091629],
+    [40.734695,-74.09539],
+    [40.732304,-74.097137],
+    [40.730423,-74.097916],
+    [40.721085,-74.100471],
+    [40.718765,-74.103416],
+    [40.717701,-74.101685],
+    [40.714603,-74.09639],
+    [40.7141,-74.095497],
+    [40.711906,-74.092224],
+    [40.713062,-74.090225],
+    [40.709946,-74.085564],
+    [40.709625,-74.085663],
+    [40.709347,-74.085793],
+    [40.709106,-74.08596],
+    [40.708862,-74.086151],
+    [40.708611,-74.086426],
+    [40.708408,-74.086693],
+    [40.708023,-74.087242],
+    [40.707314,-74.086151],
+    [40.709667,-74.084206],
+    [40.71059,-74.083488],
+    [40.711884,-74.082512],
+    [40.714069,-74.080742]
+  ];
+
+  wardc = [
+    [40.74334,-74.054871],
+    [40.744717,-74.058266],
+    [40.739964,-74.061668],
+    [40.740299,-74.06292],
+    [40.74099,-74.06601],
+    [40.741352,-74.06768],
+    [40.741978,-74.070557],
+    [40.740223,-74.071602],
+    [40.740101,-74.071739],
+    [40.739494,-74.072083],
+    [40.738708,-74.072319],
+    [40.737659,-74.072807],
+    [40.737549,-74.072594],
+    [40.736755,-74.069878],
+    [40.736542,-74.070015],
+    [40.734402,-74.07135],
+    [40.730877,-74.073486],
+    [40.730068,-74.071449],
+    [40.729717,-74.070702],
+    [40.72924,-74.069496],
+    [40.728321,-74.070099],
+    [40.72718,-74.067192],
+    [40.726437,-74.067497],
+    [40.725883,-74.067688],
+    [40.7253,-74.068054],
+    [40.724819,-74.067215],
+    [40.723766,-74.064194],
+    [40.723782,-74.064156],
+    [40.722988,-74.061646],
+    [40.721024,-74.055435],
+    [40.723148,-74.054695],
+    [40.723583,-74.056107],
+    [40.726177,-74.054497],
+    [40.727474,-74.053947],
+    [40.728329,-74.053581],
+    [40.730701,-74.051987],
+    [40.731281,-74.051498],
+    [40.731449,-74.051888],
+    [40.731556,-74.051682],
+    [40.731724,-74.051491],
+    [40.73188,-74.051331],
+    [40.732533,-74.050438],
+    [40.732849,-74.050125],
+    [40.734009,-74.049049],
+    [40.735065,-74.048271],
+    [40.735607,-74.046204],
+    [40.736008,-74.044556],
+    [40.736134,-74.04377],
+    [40.736309,-74.042816],
+    [40.736553,-74.042908],
+    [40.737545,-74.0439],
+    [40.737705,-74.043816],
+    [40.737896,-74.043816],
+    [40.738274,-74.043671],
+    [40.738514,-74.043617],
+    [40.738544,-74.043648],
+    [40.738602,-74.043694],
+    [40.738754,-74.043739],
+    [40.739052,-74.043655],
+    [40.739117,-74.043655],
+    [40.739319,-74.043602],
+    [40.739697,-74.04348],
+    [40.739857,-74.043381],
+    [40.739998,-74.043602],
+    [40.740116,-74.043701],
+    [40.740292,-74.04361],
+    [40.740322,-74.043587],
+    [40.740501,-74.04406],
+    [40.739639,-74.045074],
+    [40.739609,-74.045135],
+    [40.739628,-74.045197],
+    [40.739704,-74.045181],
+    [40.740688,-74.04454],
+    [40.740936,-74.045204],
+    [40.742123,-74.04847],
+    [40.742195,-74.048561],
+    [40.743305,-74.051216],
+    [40.742817,-74.051559],
+    [40.74379,-74.053947],
+    [40.742954,-74.054543],
+    [40.74334,-74.054871]
+  ];
+
+  wardd = [
+    [40.740322,-74.043587],
+    [40.740353,-74.043571],
+    [40.740425,-74.043495],
+    [40.74054,-74.043343],
+    [40.740555,-74.043327],
+    [40.740612,-74.043274],
+    [40.740681,-74.043198],
+    [40.740742,-74.043106],
+    [40.740845,-74.042953],
+    [40.740898,-74.042862],
+    [40.740898,-74.042862],
+    [40.740898,-74.042862],
+    [40.740952,-74.042778],
+    [40.740955,-74.04277],
+    [40.740982,-74.042725],
+    [40.741047,-74.042618],
+    [40.741047,-74.042618],
+    [40.741077,-74.042557],
+    [40.741104,-74.042511],
+    [40.741161,-74.042404],
+    [40.741188,-74.042358],
+    [40.741219,-74.042313],
+    [40.741234,-74.042297],
+    [40.741272,-74.042252],
+    [40.741318,-74.042213],
+    [40.741356,-74.042191],
+    [40.741402,-74.042168],
+    [40.741425,-74.04216],
+    [40.741455,-74.042152],
+    [40.741558,-74.042168],
+    [40.741711,-74.042183],
+    [40.74197,-74.042221],
+    [40.742046,-74.042229],
+    [40.742134,-74.042244],
+    [40.74226,-74.042259],
+    [40.742386,-74.042274],
+    [40.742458,-74.042282],
+    [40.742668,-74.042259],
+    [40.742668,-74.042259],
+    [40.742668,-74.042259],
+    [40.742687,-74.042259],
+    [40.742687,-74.042259],
+    [40.742771,-74.042244],
+    [40.742863,-74.042236],
+    [40.742893,-74.042229],
+    [40.742928,-74.042221],
+    [40.742996,-74.042198],
+    [40.743183,-74.042114],
+    [40.743359,-74.04203],
+    [40.743446,-74.041977],
+    [40.743481,-74.041946],
+    [40.743568,-74.041893],
+    [40.743736,-74.041763],
+    [40.743801,-74.041718],
+    [40.74387,-74.041649],
+    [40.743931,-74.041595],
+    [40.743996,-74.041527],
+    [40.744022,-74.041504],
+    [40.744057,-74.041489],
+    [40.744125,-74.041458],
+    [40.744179,-74.041443],
+    [40.744213,-74.041443],
+    [40.744282,-74.041435],
+    [40.744354,-74.041443],
+    [40.744431,-74.041458],
+    [40.744488,-74.041466],
+    [40.744503,-74.041466],
+    [40.744534,-74.041451],
+    [40.744541,-74.041443],
+    [40.744652,-74.041306],
+    [40.744663,-74.041306],
+    [40.744686,-74.041298],
+    [40.744709,-74.04129],
+    [40.744732,-74.041283],
+    [40.744755,-74.041283],
+    [40.744778,-74.041267],
+    [40.744797,-74.041267],
+    [40.744801,-74.04126],
+    [40.744839,-74.041237],
+    [40.744896,-74.041199],
+    [40.744987,-74.04113],
+    [40.745117,-74.041016],
+    [40.745197,-74.040939],
+    [40.745224,-74.040909],
+    [40.745262,-74.040871],
+    [40.7453,-74.040833],
+    [40.74538,-74.040756],
+    [40.745464,-74.04068],
+    [40.745743,-74.040405],
+    [40.745838,-74.040314],
+    [40.745975,-74.040184],
+    [40.746197,-74.039978],
+    [40.746346,-74.039841],
+    [40.746399,-74.039795],
+    [40.746506,-74.039703],
+    [40.746578,-74.039658],
+    [40.746616,-74.039627],
+    [40.746716,-74.039558],
+    [40.746826,-74.039505],
+    [40.74691,-74.039459],
+    [40.747032,-74.039398],
+    [40.74728,-74.039299],
+    [40.747417,-74.039246],
+    [40.74752,-74.039192],
+    [40.747578,-74.039154],
+    [40.747635,-74.039124],
+    [40.747734,-74.039047],
+    [40.747795,-74.039001],
+    [40.747936,-74.038864],
+    [40.748306,-74.038612],
+    [40.749657,-74.038017],
+    [40.749874,-74.03788],
+    [40.75016,-74.037659],
+    [40.750286,-74.037872],
+    [40.750774,-74.038727],
+    [40.750847,-74.038841],
+    [40.750912,-74.038841],
+    [40.75098,-74.038872],
+    [40.751022,-74.038956],
+    [40.752251,-74.042175],
+    [40.752495,-74.042435],
+    [40.7528,-74.042603],
+    [40.756584,-74.043663],
+    [40.758514,-74.049072],
+    [40.758614,-74.049255],
+    [40.759117,-74.04953],
+    [40.759323,-74.049683],
+    [40.75943,-74.049797],
+    [40.759514,-74.049911],
+    [40.760082,-74.051353],
+    [40.760307,-74.051643],
+    [40.760426,-74.051788],
+    [40.760555,-74.05191],
+    [40.760914,-74.052116],
+    [40.766788,-74.055618],
+    [40.768929,-74.056808],
+    [40.76897,-74.05674],
+    [40.769142,-74.05661],
+    [40.769196,-74.056572],
+    [40.769543,-74.056335],
+    [40.769562,-74.056488],
+    [40.769581,-74.056625],
+    [40.769436,-74.056763],
+    [40.76915,-74.056946],
+    [40.768936,-74.057159],
+    [40.768665,-74.057381],
+    [40.768494,-74.05748],
+    [40.768314,-74.057594],
+    [40.768135,-74.057663],
+    [40.767979,-74.057724],
+    [40.767765,-74.057823],
+    [40.767609,-74.057907],
+    [40.767426,-74.058029],
+    [40.767258,-74.058128],
+    [40.767059,-74.058281],
+    [40.766857,-74.058456],
+    [40.76675,-74.058578],
+    [40.766647,-74.058777],
+    [40.766533,-74.059029],
+    [40.766426,-74.059235],
+    [40.76627,-74.059471],
+    [40.766102,-74.059708],
+    [40.765965,-74.059875],
+    [40.765751,-74.060074],
+    [40.765541,-74.060135],
+    [40.765308,-74.06012],
+    [40.764915,-74.060097],
+    [40.764576,-74.059944],
+    [40.764355,-74.059845],
+    [40.764164,-74.059776],
+    [40.763962,-74.059753],
+    [40.763836,-74.059784],
+    [40.763676,-74.059883],
+    [40.76355,-74.059982],
+    [40.76339,-74.060066],
+    [40.763264,-74.060036],
+    [40.763119,-74.060036],
+    [40.763054,-74.060036],
+    [40.762913,-74.060013],
+    [40.76281,-74.059982],
+    [40.762726,-74.059967],
+    [40.762608,-74.060066],
+    [40.762554,-74.060196],
+    [40.762512,-74.060333],
+    [40.76247,-74.060516],
+    [40.762428,-74.060753],
+    [40.762398,-74.060959],
+    [40.762348,-74.061348],
+    [40.762348,-74.061661],
+    [40.762371,-74.06192],
+    [40.762436,-74.062073],
+    [40.762543,-74.06234],
+    [40.762657,-74.062546],
+    [40.76281,-74.062698],
+    [40.763008,-74.062973],
+    [40.763168,-74.063141],
+    [40.763309,-74.063293],
+    [40.763512,-74.063599],
+    [40.76363,-74.063881],
+    [40.763733,-74.064056],
+    [40.763786,-74.064362],
+    [40.76379,-74.064919],
+    [40.763695,-74.065155],
+    [40.763527,-74.065437],
+    [40.763245,-74.065804],
+    [40.76318,-74.065903],
+    [40.763077,-74.066063],
+    [40.762951,-74.06633],
+    [40.762814,-74.066559],
+    [40.762581,-74.067017],
+    [40.762424,-74.067383],
+    [40.762138,-74.068115],
+    [40.761982,-74.068512],
+    [40.76149,-74.069588],
+    [40.760868,-74.070869],
+    [40.760639,-74.071289],
+    [40.760513,-74.071655],
+    [40.760292,-74.071999],
+    [40.760136,-74.072327],
+    [40.760029,-74.072411],
+    [40.759869,-74.072479],
+    [40.759678,-74.072479],
+    [40.75951,-74.072495],
+    [40.759266,-74.072556],
+    [40.759117,-74.072594],
+    [40.759022,-74.072655],
+    [40.758949,-74.072777],
+    [40.758888,-74.072945],
+    [40.758865,-74.073112],
+    [40.758774,-74.073502],
+    [40.758636,-74.073959],
+    [40.758499,-74.074394],
+    [40.758312,-74.074814],
+    [40.758228,-74.074883],
+    [40.757942,-74.075012],
+    [40.757626,-74.075127],
+    [40.75737,-74.075195],
+    [40.757214,-74.075249],
+    [40.757011,-74.075264],
+    [40.756832,-74.075195],
+    [40.756554,-74.075142],
+    [40.756416,-74.075073],
+    [40.756279,-74.075005],
+    [40.756111,-74.074936],
+    [40.755993,-74.074913],
+    [40.755867,-74.074913],
+    [40.755718,-74.074944],
+    [40.755623,-74.075012],
+    [40.755508,-74.075111],
+    [40.755432,-74.075218],
+    [40.755371,-74.075348],
+    [40.755348,-74.075539],
+    [40.755318,-74.075943],
+    [40.755322,-74.076057],
+    [40.755238,-74.076309],
+    [40.755112,-74.076508],
+    [40.75491,-74.076645],
+    [40.754696,-74.076591],
+    [40.75441,-74.076576],
+    [40.754272,-74.076492],
+    [40.754147,-74.07637],
+    [40.753998,-74.076233],
+    [40.753807,-74.076042],
+    [40.75351,-74.075706],
+    [40.753349,-74.075516],
+    [40.753147,-74.075378],
+    [40.75301,-74.075317],
+    [40.752861,-74.075333],
+    [40.752724,-74.075333],
+    [40.752575,-74.075447],
+    [40.752522,-74.075661],
+    [40.752407,-74.075912],
+    [40.75238,-74.076645],
+    [40.752174,-74.07724],
+    [40.751404,-74.079453],
+    [40.749523,-74.079018],
+    [40.749523,-74.077179],
+    [40.748566,-74.075516],
+    [40.746979,-74.074905],
+    [40.744286,-74.075546],
+    [40.74313,-74.076965],
+    [40.742962,-74.075928],
+    [40.742722,-74.074738],
+    [40.742287,-74.072166],
+    [40.741978,-74.070557],
+    [40.741352,-74.06768],
+    [40.74099,-74.06601],
+    [40.740299,-74.06292],
+    [40.739964,-74.061668],
+    [40.744717,-74.058266],
+    [40.74334,-74.054871],
+    [40.742954,-74.054543],
+    [40.74379,-74.053947],
+    [40.742817,-74.051559],
+    [40.743305,-74.051216],
+    [40.742195,-74.048561],
+    [40.742123,-74.04847],
+    [40.740936,-74.045204],
+    [40.740688,-74.04454],
+    [40.739704,-74.045181],
+    [40.739628,-74.045197],
+    [40.739609,-74.045135],
+    [40.739639,-74.045074],
+    [40.740501,-74.04406],
+    [40.740322,-74.043587]
+  ];
+
+  warde = [
+    [40.711754,-74.051491],
+    [40.711601,-74.050217],
+    [40.709446,-74.032021],
+    [40.708519,-74.023575],
+    [40.730663,-74.019814],
+    [40.732235,-74.025414],
+    [40.733101,-74.028206],
+    [40.733665,-74.030022],
+    [40.734684,-74.033318],
+    [40.735043,-74.034447],
+    [40.736324,-74.038574],
+    [40.736305,-74.038818],
+    [40.736332,-74.039177],
+    [40.736485,-74.039619],
+    [40.736343,-74.040268],
+    [40.736286,-74.040466],
+    [40.736095,-74.041817],
+    [40.735962,-74.042648],
+    [40.735947,-74.042816],
+    [40.736176,-74.042763],
+    [40.736309,-74.042816],
+    [40.736134,-74.04377],
+    [40.736008,-74.044556],
+    [40.735607,-74.046204],
+    [40.735065,-74.048271],
+    [40.734009,-74.049049],
+    [40.732849,-74.050125],
+    [40.732533,-74.050438],
+    [40.73188,-74.051331],
+    [40.731724,-74.051491],
+    [40.731556,-74.051682],
+    [40.731449,-74.051888],
+    [40.731281,-74.051498],
+    [40.730701,-74.051987],
+    [40.728329,-74.053581],
+    [40.727474,-74.053947],
+    [40.726177,-74.054497],
+    [40.723583,-74.056107],
+    [40.720676,-74.046677],
+    [40.711754,-74.051491]
+  ];
+
+  wardf = [
+    [40.724819,-74.067215],
+    [40.7253,-74.068054],
+    [40.724579,-74.069481],
+    [40.724415,-74.069725],
+    [40.724262,-74.069878],
+    [40.723846,-74.070137],
+    [40.723362,-74.07048],
+    [40.721622,-74.07209],
+    [40.718922,-74.074738],
+    [40.717091,-74.077438],
+    [40.716591,-74.078156],
+    [40.716328,-74.078438],
+    [40.714664,-74.080215],
+    [40.714069,-74.080742],
+    [40.711884,-74.082512],
+    [40.71059,-74.083488],
+    [40.709667,-74.084206],
+    [40.707314,-74.086151],
+    [40.706509,-74.086769],
+    [40.706413,-74.086884],
+    [40.705872,-74.087288],
+    [40.705769,-74.087395],
+    [40.705605,-74.087517],
+    [40.704762,-74.088631],
+    [40.701031,-74.082977],
+    [40.702888,-74.081169],
+    [40.700958,-74.078636],
+    [40.701141,-74.078316],
+    [40.700504,-74.077522],
+    [40.700226,-74.077217],
+    [40.700596,-74.076683],
+    [40.700901,-74.076088],
+    [40.701275,-74.075333],
+    [40.702507,-74.072708],
+    [40.702202,-74.071487],
+    [40.702003,-74.070587],
+    [40.7019,-74.070282],
+    [40.701813,-74.070122],
+    [40.701691,-74.069855],
+    [40.701572,-74.069572],
+    [40.700893,-74.068718],
+    [40.700371,-74.068092],
+    [40.699619,-74.067223],
+    [40.69902,-74.067436],
+    [40.696999,-74.068207],
+    [40.69371,-74.062592],
+    [40.692616,-74.060616],
+    [40.689613,-74.055206],
+    [40.680286,-74.036842],
+    [40.699257,-74.025154],
+    [40.708519,-74.023575],
+    [40.709446,-74.032021],
+    [40.711601,-74.050217],
+    [40.711754,-74.051491],
+    [40.720676,-74.046677],
+    [40.723148,-74.054695],
+    [40.721024,-74.055435],
+    [40.722988,-74.061646],
+    [40.723782,-74.064156],
+    [40.723766,-74.064194],
+    [40.724819,-74.067215]
+  ];
+
+  wards = [
+    {letter:'a',color:'#00FF00'},
+    {letter:'b',color:'#FF0000'},
+    {letter:'c',color:'#FFFF00'},
+    {letter:'d',color:'#6C0CE8'},
+    {letter:'e',color:'#0DAAFF'},
+    {letter:'f',color:'#E88E0C'}
+  ]
+
+  for (var i = 0; i < wards.length; i++) {
+    id = 'ward' + wards[i]['letter']
+
+    polygon = new google.maps.Polygon({
+      paths: constructLatLng(eval(id)),
+      strokeColor: wards[i]['color'],
+      strokeOpacity: 0.8,
+      strokeWeight: 2,
+      fillColor: wards[i]['color'],
+      fillOpacity: 0.35,
+      infobox: $('#' + id + 'i').html()
+    });
+
+    polygon.setMap(map);
+    google.maps.event.addListener(polygon, 'click', showArrays);
+  }
+
+  infoWindow = new google.maps.InfoWindow();
+}
+
+function constructLatLng(lat_long_array) {
+  new_array = []
+  for (var j = 0; j < lat_long_array.length; j++) {
+    new_array.push(new google.maps.LatLng(lat_long_array[j][0],lat_long_array[j][1]));
+  }
+  return new_array;
+}
+/** @this {google.maps.Polygon} */
+function showArrays(event) {
+  var contentString = this.infobox;
+
+  // Replace the info window's content and position.
+  infoWindow.setContent(contentString);
+  infoWindow.setPosition(event.latLng);
+
+  infoWindow.open(map);
+}
+
+google.maps.event.addDomListener(window, 'load', initialize);
+
+    </script>
+  </head>
+  <body>
+    <div id="map-canvas"></div>
+    <div id='wardai'>
+<TABLE FRAME=VOID CELLSPACING=0 COLS=3 RULES=NONE BORDER=0>
+	<COLGROUP><COL WIDTH=209><COL WIDTH=97><COL WIDTH=97></COLGROUP>
+	<TBODY>
+		<TR>
+			<TD WIDTH=209 HEIGHT=18 ALIGN=CENTER BGCOLOR="#00B050"><B><FONT FACE="Calibri,sans-serif" COLOR="#FFFFFF">Ward A</FONT></B></TD>
+			<TD WIDTH=97 ALIGN=CENTER BGCOLOR="#00B050" SDNUM="1033;0;#,##0"><B><FONT FACE="Calibri,sans-serif" COLOR="#FFFFFF">Number</FONT></B></TD>
+			<TD WIDTH=97 ALIGN=CENTER BGCOLOR="#00B050"><B><FONT FACE="Calibri,sans-serif" COLOR="#FFFFFF">% Total</FONT></B></TD>
+		</TR>
+		<TR>
+			<TD HEIGHT=18 ALIGN=LEFT><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">Total Population</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="41370" SDNUM="1033;0;#,##0"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">41,370</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="0.172" SDNUM="1033;0;0.00%"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">17.20%</FONT></B></TD>
+		</TR>
+		<TR>
+			<TD HEIGHT=18 ALIGN=LEFT><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">Total Population (single race)</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="39542" SDNUM="1033;0;#,##0"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">39,542</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="0.956" SDNUM="1033;0;0.00%"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">95.60%</FONT></B></TD>
+		</TR>
+		<TR>
+			<TD HEIGHT=18 ALIGN=LEFT><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">White</FONT></I></TD>
+			<TD ALIGN=CENTER SDVAL="12761" SDNUM="1033;0;#,##0"><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">12,761</FONT></I></TD>
+			<TD ALIGN=CENTER SDVAL="0.308" SDNUM="1033;0;0.00%"><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">30.80%</FONT></I></TD>
+		</TR>
+		<TR>
+			<TD HEIGHT=18 ALIGN=LEFT><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">Black</FONT></I></TD>
+			<TD ALIGN=CENTER SDVAL="15467" SDNUM="1033;0;#,##0"><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">15,467</FONT></I></TD>
+			<TD ALIGN=CENTER SDVAL="0.374" SDNUM="1033;0;0.00%"><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">37.40%</FONT></I></TD>
+		</TR>
+		<TR>
+			<TD HEIGHT=18 ALIGN=LEFT><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">American Indian, Alaska Native</FONT></I></TD>
+			<TD ALIGN=CENTER SDVAL="166" SDNUM="1033;0;#,##0"><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">166</FONT></I></TD>
+			<TD ALIGN=CENTER SDVAL="0.004" SDNUM="1033;0;0.00%"><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">0.40%</FONT></I></TD>
+		</TR>
+		<TR>
+			<TD HEIGHT=18 ALIGN=LEFT><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">Asian</FONT></I></TD>
+			<TD ALIGN=CENTER SDVAL="6694" SDNUM="1033;0;#,##0"><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">6,694</FONT></I></TD>
+			<TD ALIGN=CENTER SDVAL="0.162" SDNUM="1033;0;0.00%"><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">16.20%</FONT></I></TD>
+		</TR>
+		<TR>
+			<TD HEIGHT=18 ALIGN=LEFT><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">Native Hawaiian, Pacific Islander</FONT></I></TD>
+			<TD ALIGN=CENTER SDVAL="45" SDNUM="1033;0;#,##0"><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">45</FONT></I></TD>
+			<TD ALIGN=CENTER SDVAL="0.001" SDNUM="1033;0;0.00%"><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">0.10%</FONT></I></TD>
+		</TR>
+		<TR>
+			<TD HEIGHT=18 ALIGN=LEFT><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">Other</FONT></I></TD>
+			<TD ALIGN=CENTER SDVAL="4409" SDNUM="1033;0;#,##0"><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">4,409</FONT></I></TD>
+			<TD ALIGN=CENTER SDVAL="0.107" SDNUM="1033;0;0.00%"><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">10.70%</FONT></I></TD>
+		</TR>
+		<TR>
+			<TD HEIGHT=18 ALIGN=LEFT><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">Total Population (more than 1 race)</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="1828" SDNUM="1033;0;#,##0"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">1,828</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="0.044" SDNUM="1033;0;0.00%"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">4.40%</FONT></B></TD>
+		</TR>
+		<TR>
+			<TD HEIGHT=18 ALIGN=LEFT><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">Hispanic</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="8575" SDNUM="1033;0;#,##0"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">8,575</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="0.207" SDNUM="1033;0;0.00%"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">20.70%</FONT></B></TD>
+		</TR>
+		<TR>
+			<TD HEIGHT=18 ALIGN=LEFT><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">Non-Hispanic</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="32795" SDNUM="1033;0;#,##0"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">32,795</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="0.793" SDNUM="1033;0;0.00%"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">79.30%</FONT></B></TD>
+		</TR>
+		<TR>
+			<TD HEIGHT=18 ALIGN=LEFT><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">Population under 18</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="10603" SDNUM="1033;0;#,##0"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">10,603</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="0.256" SDNUM="1033;0;0.00%"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">25.60%</FONT></B></TD>
+		</TR>
+		<TR>
+			<TD HEIGHT=18 ALIGN=LEFT><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">Population 18 and older</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="30767" SDNUM="1033;0;#,##0"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">30,767</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="0.744" SDNUM="1033;0;0.00%"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">74.40%</FONT></B></TD>
+		</TR>
+		<TR>
+			<TD HEIGHT=18 ALIGN=LEFT><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">Area (sq. ft.)</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="193816014" SDNUM="1033;0;#,##0"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">193,816,014</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="0.327" SDNUM="1033;0;0.00%"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">32.70%</FONT></B></TD>
+		</TR>
+	</TBODY>
+</TABLE>
+    </div>
+    <div id='wardbi'>
+<TABLE FRAME=VOID CELLSPACING=0 COLS=3 RULES=NONE BORDER=0>
+	<COLGROUP><COL WIDTH=209><COL WIDTH=97><COL WIDTH=97></COLGROUP>
+	<TBODY>
+		<TR>
+			<TD WIDTH=209 HEIGHT=18 ALIGN=CENTER BGCOLOR="#FF0000"><B><FONT FACE="Calibri,sans-serif" COLOR="#FFFFFF">Ward B</FONT></B></TD>
+			<TD WIDTH=97 ALIGN=CENTER BGCOLOR="#FF0000" SDNUM="1033;0;#,##0"><B><FONT FACE="Calibri,sans-serif" COLOR="#FFFFFF">Number</FONT></B></TD>
+			<TD WIDTH=97 ALIGN=CENTER BGCOLOR="#FF0000"><B><FONT FACE="Calibri,sans-serif" COLOR="#FFFFFF">% Total</FONT></B></TD>
+		</TR>
+		<TR>
+			<TD HEIGHT=18 ALIGN=LEFT><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">Total Population</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="39061" SDNUM="1033;0;#,##0"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">39,061</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="0.163" SDNUM="1033;0;0.00%"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">16.30%</FONT></B></TD>
+		</TR>
+		<TR>
+			<TD HEIGHT=18 ALIGN=LEFT><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">Total Population (single race)</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="36246" SDNUM="1033;0;#,##0"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">36,246</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="0.928" SDNUM="1033;0;0.00%"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">92.80%</FONT></B></TD>
+		</TR>
+		<TR>
+			<TD HEIGHT=18 ALIGN=LEFT><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">White</FONT></I></TD>
+			<TD ALIGN=CENTER SDVAL="11796" SDNUM="1033;0;#,##0"><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">11,796</FONT></I></TD>
+			<TD ALIGN=CENTER SDVAL="0.302" SDNUM="1033;0;0.00%"><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">30.20%</FONT></I></TD>
+		</TR>
+		<TR>
+			<TD HEIGHT=18 ALIGN=LEFT><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">Black</FONT></I></TD>
+			<TD ALIGN=CENTER SDVAL="11599" SDNUM="1033;0;#,##0"><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">11,599</FONT></I></TD>
+			<TD ALIGN=CENTER SDVAL="0.297" SDNUM="1033;0;0.00%"><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">29.70%</FONT></I></TD>
+		</TR>
+		<TR>
+			<TD HEIGHT=18 ALIGN=LEFT><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">American Indian, Alaska Native</FONT></I></TD>
+			<TD ALIGN=CENTER SDVAL="191" SDNUM="1033;0;#,##0"><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">191</FONT></I></TD>
+			<TD ALIGN=CENTER SDVAL="0.005" SDNUM="1033;0;0.00%"><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">0.50%</FONT></I></TD>
+		</TR>
+		<TR>
+			<TD HEIGHT=18 ALIGN=LEFT><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">Asian</FONT></I></TD>
+			<TD ALIGN=CENTER SDVAL="7024" SDNUM="1033;0;#,##0"><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">7,024</FONT></I></TD>
+			<TD ALIGN=CENTER SDVAL="0.18" SDNUM="1033;0;0.00%"><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">18.00%</FONT></I></TD>
+		</TR>
+		<TR>
+			<TD HEIGHT=18 ALIGN=LEFT><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">Native Hawaiian, Pacific Islander</FONT></I></TD>
+			<TD ALIGN=CENTER SDVAL="34" SDNUM="1033;0;#,##0"><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">34</FONT></I></TD>
+			<TD ALIGN=CENTER SDVAL="0.001" SDNUM="1033;0;0.00%"><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">0.10%</FONT></I></TD>
+		</TR>
+		<TR>
+			<TD HEIGHT=18 ALIGN=LEFT><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">Other</FONT></I></TD>
+			<TD ALIGN=CENTER SDVAL="5602" SDNUM="1033;0;#,##0"><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">5,602</FONT></I></TD>
+			<TD ALIGN=CENTER SDVAL="0.143" SDNUM="1033;0;0.00%"><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">14.30%</FONT></I></TD>
+		</TR>
+		<TR>
+			<TD HEIGHT=18 ALIGN=LEFT><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">Total Population (more than 1 race)</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="2815" SDNUM="1033;0;#,##0"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">2,815</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="0.072" SDNUM="1033;0;0.00%"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">7.20%</FONT></B></TD>
+		</TR>
+		<TR>
+			<TD HEIGHT=18 ALIGN=LEFT><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">Hispanic</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="10496" SDNUM="1033;0;#,##0"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">10,496</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="0.269" SDNUM="1033;0;0.00%"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">26.90%</FONT></B></TD>
+		</TR>
+		<TR>
+			<TD HEIGHT=18 ALIGN=LEFT><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">Non-Hispanic</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="28565" SDNUM="1033;0;#,##0"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">28,565</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="0.731" SDNUM="1033;0;0.00%"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">73.10%</FONT></B></TD>
+		</TR>
+		<TR>
+			<TD HEIGHT=18 ALIGN=LEFT><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">Population under 18</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="10338" SDNUM="1033;0;#,##0"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">10,338</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="0.265" SDNUM="1033;0;0.00%"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">26.50%</FONT></B></TD>
+		</TR>
+		<TR>
+			<TD HEIGHT=18 ALIGN=LEFT><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">Population 18 and older</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="28723" SDNUM="1033;0;#,##0"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">28,723</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="0.735" SDNUM="1033;0;0.00%"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">73.50%</FONT></B></TD>
+		</TR>
+		<TR>
+			<TD HEIGHT=18 ALIGN=LEFT><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">Area (sq. ft.)</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="69411673" SDNUM="1033;0;#,##0"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">69,411,673</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="0.117" SDNUM="1033;0;0.00%"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">11.70%</FONT></B></TD>
+		</TR>
+	</TBODY>
+</TABLE>
+    </div>
+    <div id='wardci'>
+<TABLE FRAME=VOID CELLSPACING=0 COLS=3 RULES=NONE BORDER=0>
+	<COLGROUP><COL WIDTH=209><COL WIDTH=97><COL WIDTH=97></COLGROUP>
+	<TBODY>
+		<TR>
+			<TD WIDTH=209 HEIGHT=18 ALIGN=CENTER BGCOLOR="#FFFF00"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">Ward C</FONT></B></TD>
+			<TD WIDTH=97 ALIGN=CENTER BGCOLOR="#FFFF00" SDNUM="1033;0;#,##0"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">Number</FONT></B></TD>
+			<TD WIDTH=97 ALIGN=CENTER BGCOLOR="#FFFF00"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">% Total</FONT></B></TD>
+		</TR>
+		<TR>
+			<TD HEIGHT=18 ALIGN=LEFT><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">Total Population</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="41252" SDNUM="1033;0;#,##0"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">41,252</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="0.172" SDNUM="1033;0;0.00%"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">17.20%</FONT></B></TD>
+		</TR>
+		<TR>
+			<TD HEIGHT=18 ALIGN=LEFT><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">Total Population (single race)</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="37680" SDNUM="1033;0;#,##0"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">37,680</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="0.913" SDNUM="1033;0;0.00%"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">91.30%</FONT></B></TD>
+		</TR>
+		<TR>
+			<TD HEIGHT=18 ALIGN=LEFT><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">White</FONT></I></TD>
+			<TD ALIGN=CENTER SDVAL="16178" SDNUM="1033;0;#,##0"><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">16,178</FONT></I></TD>
+			<TD ALIGN=CENTER SDVAL="0.392" SDNUM="1033;0;0.00%"><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">39.20%</FONT></I></TD>
+		</TR>
+		<TR>
+			<TD HEIGHT=18 ALIGN=LEFT><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">Black</FONT></I></TD>
+			<TD ALIGN=CENTER SDVAL="4050" SDNUM="1033;0;#,##0"><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">4,050</FONT></I></TD>
+			<TD ALIGN=CENTER SDVAL="0.098" SDNUM="1033;0;0.00%"><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">9.80%</FONT></I></TD>
+		</TR>
+		<TR>
+			<TD HEIGHT=18 ALIGN=LEFT><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">American Indian, Alaska Native</FONT></I></TD>
+			<TD ALIGN=CENTER SDVAL="234" SDNUM="1033;0;#,##0"><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">234</FONT></I></TD>
+			<TD ALIGN=CENTER SDVAL="0.006" SDNUM="1033;0;0.00%"><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">0.60%</FONT></I></TD>
+		</TR>
+		<TR>
+			<TD HEIGHT=18 ALIGN=LEFT><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">Asian</FONT></I></TD>
+			<TD ALIGN=CENTER SDVAL="10075" SDNUM="1033;0;#,##0"><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">10,075</FONT></I></TD>
+			<TD ALIGN=CENTER SDVAL="0.244" SDNUM="1033;0;0.00%"><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">24.40%</FONT></I></TD>
+		</TR>
+		<TR>
+			<TD HEIGHT=18 ALIGN=LEFT><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">Native Hawaiian, Pacific Islander</FONT></I></TD>
+			<TD ALIGN=CENTER SDVAL="23" SDNUM="1033;0;#,##0"><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">23</FONT></I></TD>
+			<TD ALIGN=CENTER SDVAL="0.001" SDNUM="1033;0;0.00%"><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">0.10%</FONT></I></TD>
+		</TR>
+		<TR>
+			<TD HEIGHT=18 ALIGN=LEFT><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">Other</FONT></I></TD>
+			<TD ALIGN=CENTER SDVAL="7120" SDNUM="1033;0;#,##0"><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">7,120</FONT></I></TD>
+			<TD ALIGN=CENTER SDVAL="0.173" SDNUM="1033;0;0.00%"><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">17.30%</FONT></I></TD>
+		</TR>
+		<TR>
+			<TD HEIGHT=18 ALIGN=LEFT><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">Total Population (more than 1 race)</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="3572" SDNUM="1033;0;#,##0"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">3,572</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="0.087" SDNUM="1033;0;0.00%"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">8.70%</FONT></B></TD>
+		</TR>
+		<TR>
+			<TD HEIGHT=18 ALIGN=LEFT><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">Hispanic</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="13073" SDNUM="1033;0;#,##0"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">13,073</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="0.317" SDNUM="1033;0;0.00%"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">31.70%</FONT></B></TD>
+		</TR>
+		<TR>
+			<TD HEIGHT=18 ALIGN=LEFT><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">Non-Hispanic</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="28179" SDNUM="1033;0;#,##0"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">28,179</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="0.683" SDNUM="1033;0;0.00%"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">68.30%</FONT></B></TD>
+		</TR>
+		<TR>
+			<TD HEIGHT=18 ALIGN=LEFT><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">Population under 18</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="9136" SDNUM="1033;0;#,##0"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">9,136</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="0.221" SDNUM="1033;0;0.00%"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">22.10%</FONT></B></TD>
+		</TR>
+		<TR>
+			<TD HEIGHT=18 ALIGN=LEFT><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">Population 18 and older</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="32116" SDNUM="1033;0;#,##0"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">32,116</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="0.779" SDNUM="1033;0;0.00%"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">77.90%</FONT></B></TD>
+		</TR>
+		<TR>
+			<TD HEIGHT=18 ALIGN=LEFT><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">Area (sq. ft.)</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="37782045" SDNUM="1033;0;#,##0"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">37,782,045</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="0.064" SDNUM="1033;0;0.00%"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">6.40%</FONT></B></TD>
+		</TR>
+	</TBODY>
+</TABLE>
+    </div>
+    <div id='warddi'>
+<TABLE FRAME=VOID CELLSPACING=0 COLS=3 RULES=NONE BORDER=0>
+	<COLGROUP><COL WIDTH=209><COL WIDTH=97><COL WIDTH=97></COLGROUP>
+	<TBODY>
+		<TR>
+			<TD WIDTH=209 HEIGHT=18 ALIGN=CENTER BGCOLOR="#7030A0"><B><FONT FACE="Calibri,sans-serif" COLOR="#FFFFFF">Ward D</FONT></B></TD>
+			<TD WIDTH=97 ALIGN=CENTER BGCOLOR="#7030A0" SDNUM="1033;0;#,##0"><B><FONT FACE="Calibri,sans-serif" COLOR="#FFFFFF">Number</FONT></B></TD>
+			<TD WIDTH=97 ALIGN=CENTER BGCOLOR="#7030A0"><B><FONT FACE="Calibri,sans-serif" COLOR="#FFFFFF">% Total</FONT></B></TD>
+		</TR>
+		<TR>
+			<TD HEIGHT=18 ALIGN=LEFT><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">Total Population</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="41227" SDNUM="1033;0;#,##0"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">41,227</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="0.172" SDNUM="1033;0;0.00%"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">17.20%</FONT></B></TD>
+		</TR>
+		<TR>
+			<TD HEIGHT=18 ALIGN=LEFT><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">Total Population (single race)</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="38623" SDNUM="1033;0;#,##0"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">38,623</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="0.937" SDNUM="1033;0;0.00%"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">93.70%</FONT></B></TD>
+		</TR>
+		<TR>
+			<TD HEIGHT=18 ALIGN=LEFT><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">White</FONT></I></TD>
+			<TD ALIGN=CENTER SDVAL="19681" SDNUM="1033;0;#,##0"><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">19,681</FONT></I></TD>
+			<TD ALIGN=CENTER SDVAL="0.477" SDNUM="1033;0;0.00%"><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">47.70%</FONT></I></TD>
+		</TR>
+		<TR>
+			<TD HEIGHT=18 ALIGN=LEFT><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">Black</FONT></I></TD>
+			<TD ALIGN=CENTER SDVAL="2459" SDNUM="1033;0;#,##0"><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">2,459</FONT></I></TD>
+			<TD ALIGN=CENTER SDVAL="0.06" SDNUM="1033;0;0.00%"><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">6.00%</FONT></I></TD>
+		</TR>
+		<TR>
+			<TD HEIGHT=18 ALIGN=LEFT><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">American Indian, Alaska Native</FONT></I></TD>
+			<TD ALIGN=CENTER SDVAL="225" SDNUM="1033;0;#,##0"><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">225</FONT></I></TD>
+			<TD ALIGN=CENTER SDVAL="0.005" SDNUM="1033;0;0.00%"><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">0.50%</FONT></I></TD>
+		</TR>
+		<TR>
+			<TD HEIGHT=18 ALIGN=LEFT><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">Asian</FONT></I></TD>
+			<TD ALIGN=CENTER SDVAL="6421" SDNUM="1033;0;#,##0"><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">6,421</FONT></I></TD>
+			<TD ALIGN=CENTER SDVAL="0.156" SDNUM="1033;0;0.00%"><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">15.60%</FONT></I></TD>
+		</TR>
+		<TR>
+			<TD HEIGHT=18 ALIGN=LEFT><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">Native Hawaiian, Pacific Islander</FONT></I></TD>
+			<TD ALIGN=CENTER SDVAL="28" SDNUM="1033;0;#,##0"><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">28</FONT></I></TD>
+			<TD ALIGN=CENTER SDVAL="0.001" SDNUM="1033;0;0.00%"><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">0.10%</FONT></I></TD>
+		</TR>
+		<TR>
+			<TD HEIGHT=18 ALIGN=LEFT><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">Other</FONT></I></TD>
+			<TD ALIGN=CENTER SDVAL="9809" SDNUM="1033;0;#,##0"><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">9,809</FONT></I></TD>
+			<TD ALIGN=CENTER SDVAL="0.238" SDNUM="1033;0;0.00%"><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">23.80%</FONT></I></TD>
+		</TR>
+		<TR>
+			<TD HEIGHT=18 ALIGN=LEFT><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">Total Population (more than 1 race)</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="2604" SDNUM="1033;0;#,##0"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">2,604</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="0.063" SDNUM="1033;0;0.00%"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">6.30%</FONT></B></TD>
+		</TR>
+		<TR>
+			<TD HEIGHT=18 ALIGN=LEFT><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">Hispanic</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="17907" SDNUM="1033;0;#,##0"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">17,907</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="0.434" SDNUM="1033;0;0.00%"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">43.40%</FONT></B></TD>
+		</TR>
+		<TR>
+			<TD HEIGHT=18 ALIGN=LEFT><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">Non-Hispanic</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="23320" SDNUM="1033;0;#,##0"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">23,320</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="0.566" SDNUM="1033;0;0.00%"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">56.60%</FONT></B></TD>
+		</TR>
+		<TR>
+			<TD HEIGHT=18 ALIGN=LEFT><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">Population under 18</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="10543" SDNUM="1033;0;#,##0"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">10,543</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="0.256" SDNUM="1033;0;0.00%"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">25.60%</FONT></B></TD>
+		</TR>
+		<TR>
+			<TD HEIGHT=18 ALIGN=LEFT><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">Population 18 and older</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="30684" SDNUM="1033;0;#,##0"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">30,684</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="0.744" SDNUM="1033;0;0.00%"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">74.40%</FONT></B></TD>
+		</TR>
+		<TR>
+			<TD HEIGHT=18 ALIGN=LEFT><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">Area (sq. ft.)</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="68378082" SDNUM="1033;0;#,##0"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">68,378,082</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="0.115" SDNUM="1033;0;0.00%"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">11.50%</FONT></B></TD>
+		</TR>
+	</TBODY>
+</TABLE>
+    </div>
+    <div id='wardei'>
+<TABLE FRAME=VOID CELLSPACING=0 COLS=3 RULES=NONE BORDER=0>
+	<COLGROUP><COL WIDTH=209><COL WIDTH=97><COL WIDTH=97></COLGROUP>
+	<TBODY>
+		<TR>
+			<TD WIDTH=209 HEIGHT=18 ALIGN=CENTER BGCOLOR="#00B0F0"><B><FONT FACE="Calibri,sans-serif" COLOR="#FFFFFF">Ward E</FONT></B></TD>
+			<TD WIDTH=97 ALIGN=CENTER BGCOLOR="#00B0F0" SDNUM="1033;0;#,##0"><B><FONT FACE="Calibri,sans-serif" COLOR="#FFFFFF">Number</FONT></B></TD>
+			<TD WIDTH=97 ALIGN=CENTER BGCOLOR="#00B0F0"><B><FONT FACE="Calibri,sans-serif" COLOR="#FFFFFF">% Total</FONT></B></TD>
+		</TR>
+		<TR>
+			<TD HEIGHT=18 ALIGN=LEFT><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">Total Population</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="38303" SDNUM="1033;0;#,##0"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">38,303</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="0.16" SDNUM="1033;0;0.00%"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">16.00%</FONT></B></TD>
+		</TR>
+		<TR>
+			<TD HEIGHT=18 ALIGN=LEFT><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">Total Population (single race)</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="36400" SDNUM="1033;0;#,##0"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">36,400</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="0.95" SDNUM="1033;0;0.00%"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">95.00%</FONT></B></TD>
+		</TR>
+		<TR>
+			<TD HEIGHT=18 ALIGN=LEFT><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">White</FONT></I></TD>
+			<TD ALIGN=CENTER SDVAL="17258" SDNUM="1033;0;#,##0"><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">17,258</FONT></I></TD>
+			<TD ALIGN=CENTER SDVAL="0.451" SDNUM="1033;0;0.00%"><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">45.10%</FONT></I></TD>
+		</TR>
+		<TR>
+			<TD HEIGHT=18 ALIGN=LEFT><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">Black</FONT></I></TD>
+			<TD ALIGN=CENTER SDVAL="6467" SDNUM="1033;0;#,##0"><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">6,467</FONT></I></TD>
+			<TD ALIGN=CENTER SDVAL="0.169" SDNUM="1033;0;0.00%"><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">16.90%</FONT></I></TD>
+		</TR>
+		<TR>
+			<TD HEIGHT=18 ALIGN=LEFT><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">American Indian, Alaska Native</FONT></I></TD>
+			<TD ALIGN=CENTER SDVAL="141" SDNUM="1033;0;#,##0"><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">141</FONT></I></TD>
+			<TD ALIGN=CENTER SDVAL="0.004" SDNUM="1033;0;0.00%"><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">0.40%</FONT></I></TD>
+		</TR>
+		<TR>
+			<TD HEIGHT=18 ALIGN=LEFT><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">Asian</FONT></I></TD>
+			<TD ALIGN=CENTER SDVAL="7473" SDNUM="1033;0;#,##0"><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">7,473</FONT></I></TD>
+			<TD ALIGN=CENTER SDVAL="0.195" SDNUM="1033;0;0.00%"><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">19.50%</FONT></I></TD>
+		</TR>
+		<TR>
+			<TD HEIGHT=18 ALIGN=LEFT><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">Native Hawaiian, Pacific Islander</FONT></I></TD>
+			<TD ALIGN=CENTER SDVAL="24" SDNUM="1033;0;#,##0"><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">24</FONT></I></TD>
+			<TD ALIGN=CENTER SDVAL="0.001" SDNUM="1033;0;0.00%"><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">0.10%</FONT></I></TD>
+		</TR>
+		<TR>
+			<TD HEIGHT=18 ALIGN=LEFT><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">Other</FONT></I></TD>
+			<TD ALIGN=CENTER SDVAL="5037" SDNUM="1033;0;#,##0"><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">5,037</FONT></I></TD>
+			<TD ALIGN=CENTER SDVAL="0.132" SDNUM="1033;0;0.00%"><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">13.20%</FONT></I></TD>
+		</TR>
+		<TR>
+			<TD HEIGHT=18 ALIGN=LEFT><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">Total Population (more than 1 race)</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="1903" SDNUM="1033;0;#,##0"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">1,903</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="0.05" SDNUM="1033;0;0.00%"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">5.00%</FONT></B></TD>
+		</TR>
+		<TR>
+			<TD HEIGHT=18 ALIGN=LEFT><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">Hispanic</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="10193" SDNUM="1033;0;#,##0"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">10,193</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="0.266" SDNUM="1033;0;0.00%"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">26.60%</FONT></B></TD>
+		</TR>
+		<TR>
+			<TD HEIGHT=18 ALIGN=LEFT><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">Non-Hispanic</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="28110" SDNUM="1033;0;#,##0"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">28,110</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="0.734" SDNUM="1033;0;0.00%"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">73.40%</FONT></B></TD>
+		</TR>
+		<TR>
+			<TD HEIGHT=18 ALIGN=LEFT><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">Population under 18</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="6594" SDNUM="1033;0;#,##0"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">6,594</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="0.172" SDNUM="1033;0;0.00%"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">17.20%</FONT></B></TD>
+		</TR>
+		<TR>
+			<TD HEIGHT=18 ALIGN=LEFT><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">Population 18 and older</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="31709" SDNUM="1033;0;#,##0"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">31,709</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="0.828" SDNUM="1033;0;0.00%"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">82.80%</FONT></B></TD>
+		</TR>
+		<TR>
+			<TD HEIGHT=18 ALIGN=LEFT><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">Area (sq. ft.)</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="83941574" SDNUM="1033;0;#,##0"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">83,941,574</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="0.142" SDNUM="1033;0;0.00%"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">14.20%</FONT></B></TD>
+		</TR>
+	</TBODY>
+</TABLE>
+    </div>
+    <div id='wardfi'>
+<TABLE FRAME=VOID CELLSPACING=0 COLS=3 RULES=NONE BORDER=0>
+	<COLGROUP><COL WIDTH=209><COL WIDTH=97><COL WIDTH=97></COLGROUP>
+	<TBODY>
+		<TR>
+			<TD WIDTH=209 HEIGHT=18 ALIGN=CENTER BGCOLOR="#FFC000"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">Ward F</FONT></B></TD>
+			<TD WIDTH=97 ALIGN=CENTER BGCOLOR="#FFC000" SDNUM="1033;0;#,##0"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">Number</FONT></B></TD>
+			<TD WIDTH=97 ALIGN=CENTER BGCOLOR="#FFC000"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">% Total</FONT></B></TD>
+		</TR>
+		<TR>
+			<TD HEIGHT=18 ALIGN=LEFT><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">Total Population</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="38842" SDNUM="1033;0;#,##0"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">38,842</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="0.162" SDNUM="1033;0;0.00%"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">16.20%</FONT></B></TD>
+		</TR>
+		<TR>
+			<TD HEIGHT=18 ALIGN=LEFT><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">Total Population (single race)</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="37553" SDNUM="1033;0;#,##0"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">37,553</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="0.967" SDNUM="1033;0;0.00%"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">96.70%</FONT></B></TD>
+		</TR>
+		<TR>
+			<TD HEIGHT=18 ALIGN=LEFT><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">White</FONT></I></TD>
+			<TD ALIGN=CENTER SDVAL="3963" SDNUM="1033;0;#,##0"><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">3,963</FONT></I></TD>
+			<TD ALIGN=CENTER SDVAL="0.102" SDNUM="1033;0;0.00%"><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">10.20%</FONT></I></TD>
+		</TR>
+		<TR>
+			<TD HEIGHT=18 ALIGN=LEFT><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">Black</FONT></I></TD>
+			<TD ALIGN=CENTER SDVAL="27952" SDNUM="1033;0;#,##0"><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">27,952</FONT></I></TD>
+			<TD ALIGN=CENTER SDVAL="0.72" SDNUM="1033;0;0.00%"><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">72.00%</FONT></I></TD>
+		</TR>
+		<TR>
+			<TD HEIGHT=18 ALIGN=LEFT><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">American Indian, Alaska Native</FONT></I></TD>
+			<TD ALIGN=CENTER SDVAL="114" SDNUM="1033;0;#,##0"><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">114</FONT></I></TD>
+			<TD ALIGN=CENTER SDVAL="0.003" SDNUM="1033;0;0.00%"><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">0.30%</FONT></I></TD>
+		</TR>
+		<TR>
+			<TD HEIGHT=18 ALIGN=LEFT><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">Asian</FONT></I></TD>
+			<TD ALIGN=CENTER SDVAL="1194" SDNUM="1033;0;#,##0"><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">1,194</FONT></I></TD>
+			<TD ALIGN=CENTER SDVAL="0.031" SDNUM="1033;0;0.00%"><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">3.10%</FONT></I></TD>
+		</TR>
+		<TR>
+			<TD HEIGHT=18 ALIGN=LEFT><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">Native Hawaiian, Pacific Islander</FONT></I></TD>
+			<TD ALIGN=CENTER SDVAL="27" SDNUM="1033;0;#,##0"><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">27</FONT></I></TD>
+			<TD ALIGN=CENTER SDVAL="0.001" SDNUM="1033;0;0.00%"><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">0.10%</FONT></I></TD>
+		</TR>
+		<TR>
+			<TD HEIGHT=18 ALIGN=LEFT><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">Other</FONT></I></TD>
+			<TD ALIGN=CENTER SDVAL="4303" SDNUM="1033;0;#,##0"><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">4,303</FONT></I></TD>
+			<TD ALIGN=CENTER SDVAL="0.111" SDNUM="1033;0;0.00%"><I><FONT FACE="Calibri,sans-serif" COLOR="#000000">11.10%</FONT></I></TD>
+		</TR>
+		<TR>
+			<TD HEIGHT=18 ALIGN=LEFT><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">Total Population (more than 1 race)</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="1289" SDNUM="1033;0;#,##0"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">1,289</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="0.033" SDNUM="1033;0;0.00%"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">3.30%</FONT></B></TD>
+		</TR>
+		<TR>
+			<TD HEIGHT=18 ALIGN=LEFT><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">Hispanic</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="7708" SDNUM="1033;0;#,##0"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">7,708</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="0.198" SDNUM="1033;0;0.00%"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">19.80%</FONT></B></TD>
+		</TR>
+		<TR>
+			<TD HEIGHT=18 ALIGN=LEFT><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">Non-Hispanic</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="31134" SDNUM="1033;0;#,##0"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">31,134</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="0.802" SDNUM="1033;0;0.00%"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">80.20%</FONT></B></TD>
+		</TR>
+		<TR>
+			<TD HEIGHT=18 ALIGN=LEFT><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">Population under 18</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="12189" SDNUM="1033;0;#,##0"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">12,189</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="0.314" SDNUM="1033;0;0.00%"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">31.40%</FONT></B></TD>
+		</TR>
+		<TR>
+			<TD HEIGHT=18 ALIGN=LEFT><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">Population 18 and older</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="26653" SDNUM="1033;0;#,##0"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">26,653</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="0.686" SDNUM="1033;0;0.00%"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">68.60%</FONT></B></TD>
+		</TR>
+		<TR>
+			<TD HEIGHT=18 ALIGN=LEFT><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">Area (sq. ft.)</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="138958454" SDNUM="1033;0;#,##0"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">138,958,454</FONT></B></TD>
+			<TD ALIGN=CENTER SDVAL="0.235" SDNUM="1033;0;0.00%"><B><FONT FACE="Calibri,sans-serif" COLOR="#000000">23.50%</FONT></B></TD>
+		</TR>
+	</TBODY>
+</TABLE>
+    </div>
+  </body>
+</html>
